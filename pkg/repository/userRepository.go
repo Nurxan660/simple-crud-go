@@ -7,16 +7,14 @@ import (
 	"testGo/pkg/models"
 )
 
-func CreateTable(){
+func CreateTable() {
 	db := config.CreateConnection()
 	query := "CREATE TABLE  if not exists users (userid SERIAL PRIMARY KEY,firstname varchar,lastname varchar,age int);"
 
-	  res:=db.QueryRow(query)
-	  fmt.Print(res)
+	res := db.QueryRow(query)
+	fmt.Print(res)
 
-	  
 	defer db.Close()
-
 
 }
 
@@ -29,19 +27,16 @@ func InsertUser(user models.User) int64 {
 
 	err := db.QueryRow(query, user.Firstname, user.Lastname, user.Age).Scan(&id)
 	if err != nil {
-		log.Fatal("cannot execute this one",err)
+		log.Fatal("cannot execute this one", err)
 	}
 
 	return id
 
 }
 
-
 func GetUser(id int64) (models.User, error) {
-	
-	db := config.CreateConnection()
 
-	
+	db := config.CreateConnection()
 
 	var user models.User
 
@@ -51,23 +46,18 @@ func GetUser(id int64) (models.User, error) {
 
 	err := row.Scan(&user.Id, &user.Firstname, &user.Lastname, &user.Age)
 
-	
-
 	defer db.Close()
 
 	return user, err
 }
 
-
 func UpdateUser(id int64, user models.User) int64 {
 
 	db := config.CreateConnection()
 
-	
-
 	sqlStatement := `UPDATE users SET lastname=$3, firstname=$2, age=$4 WHERE userid=$1`
 
-	 res,err := db.Exec(sqlStatement, id, user.Firstname, user.Lastname, user.Age)
+	res, err := db.Exec(sqlStatement, id, user.Firstname, user.Lastname, user.Age)
 
 	if err != nil {
 		log.Fatalf("Cannot execute the query. %v", err)
@@ -86,17 +76,11 @@ func UpdateUser(id int64, user models.User) int64 {
 
 	return rowsAffected
 
-
-	
-
-	
 }
 
-func DeleteUser(id int64) int64  {
+func DeleteUser(id int64) int64 {
 
 	db := config.CreateConnection()
-
-	
 
 	sqlStatement := `DELETE FROM users WHERE userid=$1`
 
@@ -119,8 +103,4 @@ func DeleteUser(id int64) int64  {
 
 	return rowsAffected
 
-
-	
-
-	
 }

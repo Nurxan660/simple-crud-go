@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"testGo/pkg/models"
 	"testGo/pkg/repository"
-	"github.com/gorilla/mux"
-	"strconv"
-	"fmt"
 
+	"github.com/gorilla/mux"
 )
 
 type response struct {
@@ -17,28 +17,26 @@ type response struct {
 	Message string `json:"message"`
 }
 
-
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	var user models.User
 
-
 	err := json.NewDecoder(r.Body).Decode(&user)
 
 	if err != nil {
-		log.Fatal("error when decode body",err)
+		log.Fatal("error when decode body", err)
 	}
 
-	userId:=repository.InsertUser(user)
+	userId := repository.InsertUser(user)
 
-	res:=response{userId,"Successfully created"}
+	res := response{userId, "Successfully created"}
 
 	json.NewEncoder(w).Encode(res)
 
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	
+
 	params := mux.Vars(r)
 
 	id, err := strconv.Atoi(params["id"])
@@ -53,11 +51,8 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Cannot get user. %v", err)
 	}
 
-	
-
 	json.NewEncoder(w).Encode(user)
 }
-
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
@@ -79,8 +74,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	updatedRows := repository.UpdateUser(int64(id), user)
 
-	 msg := fmt.Sprintf(" Total rows/record affected %v", updatedRows)
-
+	msg := fmt.Sprintf(" Total rows/record affected %v", updatedRows)
 
 	res := response{
 		Id:      int64(id),
@@ -100,7 +94,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Cannot convert the string into int.  %v", err)
 	}
 
-	deletedRows :=repository.DeleteUser(int64(id))
+	deletedRows := repository.DeleteUser(int64(id))
 
 	msg := fmt.Sprintf("Total rows/record affected %v", deletedRows)
 	res := response{
